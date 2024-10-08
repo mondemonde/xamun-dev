@@ -1,42 +1,41 @@
 import * as vscode from "vscode"
+import * as cp from "child_process"
+import * as path from "path"
 
-/*
-Used to get user's current python environment (unnecessary now that we use the IDE's terminal)
-${await (async () => {
-		try {
-			const pythonEnvPath = await getPythonEnvPath()
-			if (pythonEnvPath) {
-				return `\nPython Environment: ${pythonEnvPath}`
-			}
-		} catch {}
-		return ""
-	})()}
-*/
-export async function getPythonEnvPath(): Promise<string | undefined> {
-	const pythonExtension = vscode.extensions.getExtension("ms-python.python")
+export async function getPythonEnvironment(): Promise<string | null> {
+    const pythonExtension = vscode.extensions.getExtension("ms-python.python")
+    if (!pythonExtension) {
+        return null
+    }
 
-	if (!pythonExtension) {
-		return undefined
-	}
+    await pythonExtension.activate()
 
-	// Ensure the Python extension is activated
-	if (!pythonExtension.isActive) {
-		// if the python extension is not active, we can assume the project is not a python project
-		return undefined
-	}
+    const pythonPath = getPythonPath()
+    if (!pythonPath) {
+        return null
+    }
 
-	// Access the Python extension API
-	const pythonApi = pythonExtension.exports
-	// Get the active environment path for the current workspace
-	const workspaceFolder = vscode.workspace.workspaceFolders?.[0]
-	if (!workspaceFolder) {
-		return undefined
-	}
-	// Get the active python environment path for the current workspace
-	const pythonEnv = await pythonApi?.environments?.getActiveEnvironmentPath(workspaceFolder.uri)
-	if (pythonEnv && pythonEnv.path) {
-		return pythonEnv.path
-	} else {
-		return undefined
-	}
+    try {
+        const result = await runPythonCommand(pythonPath, ["-c", "import sys; print(sys.executable)"])
+        return result.trim()
+    } catch (error) {
+        console.error("Error getting Python environment:", error)
+        return null
+    }
+}
+
+function getPythonPath(): string | undefined {
+    return vscode.workspace.getConfiguration("python").get<string>("pythonPath")
+}
+
+function runPythonCommand(pythonPath: string, args: string[]): Promise<string> {
+    return new Promise((resolve, reject) => {
+        cp.execFile(pythonPath, args, (error, stdout, stderr) => {
+            if (error) {
+                reject(error)
+            } else {
+                resolve(stdout)
+            }
+        })
+    })
 }

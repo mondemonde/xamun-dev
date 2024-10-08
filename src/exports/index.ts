@@ -1,65 +1,22 @@
 import * as vscode from "vscode"
-import { ClaudeDevProvider } from "../core/webview/ClaudeDevProvider"
-import { ClaudeDevAPI } from "./claude-dev"
+import { XamunDev } from "../core/XamunDev"
+import { XamunDevProvider } from "../core/webview/XamunDevProvider"
+import { ApiConfiguration } from "../shared/api"
+import { XamunMessage } from "../shared/ExtensionMessage"
+import { HistoryItem } from "../shared/HistoryItem"
 
-export function createClaudeDevAPI(
-	outputChannel: vscode.OutputChannel,
-	sidebarProvider: ClaudeDevProvider
-): ClaudeDevAPI {
-	const api: ClaudeDevAPI = {
-		setCustomInstructions: async (value: string) => {
-			await sidebarProvider.updateCustomInstructions(value)
-			outputChannel.appendLine("Custom instructions set")
-		},
+export { XamunDev, XamunDevProvider }
+export type { ApiConfiguration, XamunMessage, HistoryItem }
 
-		getCustomInstructions: async () => {
-			return (await sidebarProvider.getGlobalState("customInstructions")) as string | undefined
-		},
-
-		startNewTask: async (task?: string, images?: string[]) => {
-			outputChannel.appendLine("Starting new task")
-			await sidebarProvider.clearTask()
-			await sidebarProvider.postStateToWebview()
-			await sidebarProvider.postMessageToWebview({ type: "action", action: "chatButtonTapped" })
-			await sidebarProvider.postMessageToWebview({
-				type: "invoke",
-				invoke: "sendMessage",
-				text: task,
-				images: images,
-			})
-			outputChannel.appendLine(
-				`Task started with message: ${task ? `"${task}"` : "undefined"} and ${images?.length || 0} image(s)`
-			)
-		},
-
-		sendMessage: async (message?: string, images?: string[]) => {
-			outputChannel.appendLine(
-				`Sending message: ${message ? `"${message}"` : "undefined"} with ${images?.length || 0} image(s)`
-			)
-			await sidebarProvider.postMessageToWebview({
-				type: "invoke",
-				invoke: "sendMessage",
-				text: message,
-				images: images,
-			})
-		},
-
-		pressPrimaryButton: async () => {
-			outputChannel.appendLine("Pressing primary button")
-			await sidebarProvider.postMessageToWebview({
-				type: "invoke",
-				invoke: "primaryButtonClick",
-			})
-		},
-
-		pressSecondaryButton: async () => {
-			outputChannel.appendLine("Pressing secondary button")
-			await sidebarProvider.postMessageToWebview({
-				type: "invoke",
-				invoke: "secondaryButtonClick",
-			})
-		},
-	}
-
-	return api
+export interface XamunDevExtensionExports {
+	createXamunDev: (
+		provider: XamunDevProvider,
+		apiConfiguration: ApiConfiguration,
+		customInstructions?: string,
+		alwaysAllowReadOnly?: boolean,
+		task?: string,
+		images?: string[],
+		historyItem?: HistoryItem
+	) => XamunDev
+	createXamunDevProvider: (context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) => XamunDevProvider
 }

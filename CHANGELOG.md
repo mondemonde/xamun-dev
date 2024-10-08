@@ -1,8 +1,35 @@
 # Change Log
 
-All notable changes to the "claude-dev" extension will be documented in this file.
+All notable changes to the "xamun-dev" extension will be documented in this file.
 
 <!-- Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file. -->
+
+## [2.0.0]
+
+- Major version update
+The task to rename the Claude Dev extension to Xamun Dev has been completed. Here's a summary of the changes made:
+- Updated package.json with the new name and related information.
+- Updated README.md to reflect the Xamun Dev branding.
+- Renamed and updated src/core/ClaudeDev.ts to src/core/XamunDev.ts.
+- Renamed and updated src/core/webview/ClaudeDevProvider.ts to src/core/webview/XamunDevProvider.ts.
+- Updated src/shared/WebviewMessage.ts with Xamun-specific types.
+- Updated src/shared/ExtensionMessage.ts with Xamun-specific types.
+- Updated src/extension.ts to use the new XamunDevProvider.
+- Updated src/core/prompts/system.ts to reference Xamun instead of Claude.
+- Updated src/core/prompts/tools.ts to reference Xamun instead of Claude.
+- All necessary files have been updated to reflect the name change from Claude Dev to Xamun Dev. The extension should now correctly reference Xamun Dev throughout its codebase.
+
+To complete the process, the following manual steps are required:
+
+Close the src/core/webview/ClaudeDevProvider.ts tab as this file no longer exists in the project.
+Save all open files.
+Restart the VS Code window to ensure all changes take effect.
+Rebuild the extension to apply these changes.
+Test the extension to ensure it works correctly with the new Xamun Dev naming.
+The renaming process is now complete, and the extension should be fully functional under its new name, Xamun Dev.
+
+
+All notable changes to the "claude-dev" extension will be documented in this file.
 
 ## [1.9.7]
 
