@@ -1,3 +1,5 @@
+import { XamunMessage } from "./ExtensionMessage"
+
 export type HistoryItem = {
 	id: string
 	ts: number
@@ -7,4 +9,5 @@ export type HistoryItem = {
 	cacheWrites?: number
 	cacheReads?: number
 	totalCost: number
+	messages: XamunMessage[]
 }

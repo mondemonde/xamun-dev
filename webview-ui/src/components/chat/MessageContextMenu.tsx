@@ -1,14 +1,14 @@
 import React from "react"
-import { XamunMessage } from "../../sharedTypes"
+import { XamunChatMessage } from "../../types/sharedTypes"
 import { removeLeadingNonAlphanumeric } from "../../utils/stringUtils"
 
-interface ContextMenuProps {
+interface MessageContextMenuProps {
     position: { x: number; y: number }
     onClose: () => void
-    message: XamunMessage
+    message: XamunChatMessage
 }
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ position, onClose, message }) => {
+const MessageContextMenu: React.FC<MessageContextMenuProps> = ({ position, onClose, message }) => {
     const handleCopyText = () => {
         if (message.text) {
             navigator.clipboard.writeText(message.text)
@@ -40,10 +40,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ position, onClose, message })
                 zIndex: 1000,
             }}
         >
-            <button onClick={handleCopyText} disabled={!message.text}>Copy Text</button>
-            <button onClick={handleCopyCode} disabled={!(message.type === "say" && message.say === "text" && message.text)}>Copy Code</button>
+            <button onClick={handleCopyText}>Copy Text</button>
+            <button onClick={handleCopyCode}>Copy Code</button>
         </div>
     )
 }
 
-export default ContextMenu
+export default MessageContextMenu

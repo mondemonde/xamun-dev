@@ -1,86 +1,70 @@
-import { useCallback, useEffect, useState } from "react"
-import { useEvent } from "react-use"
-import { ExtensionMessage } from "../../src/shared/ExtensionMessage"
-import ChatView from "./components/chat/ChatView"
-import HistoryView from "./components/history/HistoryView"
-import SettingsView from "./components/settings/SettingsView"
-import WelcomeView from "./components/welcome/WelcomeView"
-import { ExtensionStateContextProvider, useExtensionState } from "./context/ExtensionStateContext"
-import { vscode } from "./utils/vscode"
+import React, { useState, useEffect } from 'react';
+import { useExtensionState } from './context/ExtensionStateContext';
+import ChatView from './components/chat/ChatView';
+import HistoryView from './components/history/HistoryView';
+import SettingsView from './components/settings/SettingsView';
+import WelcomeView from './components/welcome/WelcomeView';
+import { vscode } from './utils/vscode';
+import { ApiConfiguration, HistoryItem } from './types/sharedTypes';
 
-const AppContent = () => {
-	const { didHydrateState, showWelcome, shouldShowAnnouncement } = useExtensionState()
-	const [showSettings, setShowSettings] = useState(false)
-	const [showHistory, setShowHistory] = useState(false)
-	const [showAnnouncement, setShowAnnouncement] = useState(false)
+const App: React.FC = () => {
+  const { xamunMessages, taskHistory, apiConfiguration } = useExtensionState();
+  const [currentView, setCurrentView] = useState<'chat' | 'history' | 'settings' | 'welcome'>('welcome');
+  const [showAnnouncement, setShowAnnouncement] = useState(true);
 
-	const handleMessage = useCallback((e: MessageEvent) => {
-		const message: ExtensionMessage = e.data
-		switch (message.type) {
-			case "action":
-				switch (message.action!) {
-					case "settingsButtonTapped":
-						setShowSettings(true)
-						setShowHistory(false)
-						break
-					case "historyButtonTapped":
-						setShowSettings(false)
-						setShowHistory(true)
-						break
-					case "chatButtonTapped":
-						setShowSettings(false)
-						setShowHistory(false)
-						break
-				}
-				break
-		}
-	}, [])
+  useEffect(() => {
+    if (xamunMessages.length > 0) {
+      setCurrentView('chat');
+    }
+  }, [xamunMessages]);
 
-	useEvent("message", handleMessage)
+  const hideAnnouncement = () => {
+    setShowAnnouncement(false);
+    vscode.postMessage({ type: 'didShowAnnouncement' });
+  };
 
-	useEffect(() => {
-		if (shouldShowAnnouncement) {
-			setShowAnnouncement(true)
-			vscode.postMessage({ type: "didShowAnnouncement" })
-		}
-	}, [shouldShowAnnouncement])
+  const showHistoryView = () => setCurrentView('history');
+  const showSettingsView = () => setCurrentView('settings');
 
-	if (!didHydrateState) {
-		return null
-	}
+  const handleStartTask = () => {
+    setCurrentView('chat');
+    vscode.postMessage({ type: 'newTask' });
+  };
 
-	return (
-		<>
-			{showWelcome ? (
-				<WelcomeView />
-			) : (
-				<>
-					{showSettings && <SettingsView onDone={() => setShowSettings(false)} />}
-					{showHistory && <HistoryView onDone={() => setShowHistory(false)} />}
-					{/* Do not conditionally load ChatView, it's expensive and there's state we don't want to lose (user input, disableInput, askResponse promise, etc.) */}
-					<ChatView
-						showHistoryView={() => {
-							setShowSettings(false)
-							setShowHistory(true)
-						}}
-						isHidden={showSettings || showHistory}
-						showAnnouncement={showAnnouncement}
-						hideAnnouncement={() => {
-							setShowAnnouncement(false)
-						}}
-					/>
-				</>
-			)}
-		</>
-	)
-}
+  return (
+    <div className="app">
+      {currentView === 'chat' && (
+        <ChatView
+          isHidden={false}
+          showAnnouncement={showAnnouncement}
+          hideAnnouncement={hideAnnouncement}
+          showHistoryView={showHistoryView}
+          showSettingsView={showSettingsView}
+        />
+      )}
+      {currentView === 'history' && (
+        <HistoryView
+          taskHistory={taskHistory as HistoryItem[]}
+          onSelectTask={(taskId: string) => {
+            vscode.postMessage({ type: 'showTaskWithId', text: taskId });
+            setCurrentView('chat');
+          }}
+        />
+      )}
+      {currentView === 'settings' && (
+        <SettingsView
+          apiConfiguration={apiConfiguration as ApiConfiguration}
+          onSave={(newConfig: ApiConfiguration) => {
+            vscode.postMessage({ type: 'apiConfiguration', apiConfiguration: newConfig });
+            setCurrentView('chat');
+          }}
+        />
+      )}
+      {currentView === 'welcome' && (
+        <WelcomeView onStartTask={handleStartTask} />
+      )}
+    </div>
+  );
+};
 
-const App = () => {
-	return (
-		<ExtensionStateContextProvider>
-			<AppContent />
-		</ExtensionStateContextProvider>
-	)
-}
-
-export default App
+export default App;

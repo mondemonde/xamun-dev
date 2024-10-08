@@ -70,7 +70,8 @@ export class XamunDevProvider implements vscode.WebviewViewProvider {
 
 		this.setWebviewMessageListener(webviewView.webview)
 
-		// ... (keep other initialization logic)
+		// Post initial state to webview
+		this.postStateToWebview()
 	}
 
 	async postMessageToWebview(message: ExtensionMessage) {
@@ -95,6 +96,12 @@ export class XamunDevProvider implements vscode.WebviewViewProvider {
 						}
 						await this.postStateToWebview();
 						break;
+					case "newTask":
+						// Handle new task
+						break;
+					case "clearTask":
+						// Handle clear task
+						break;
 					// ... (add other case statements as needed)
 					default:
 						console.log(`Unhandled message type: ${message.type}`);
@@ -106,19 +113,20 @@ export class XamunDevProvider implements vscode.WebviewViewProvider {
 	}
 
 	private getHtmlContent(webview: vscode.Webview): string {
-		// Implement the actual HTML content generation here
+		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'webview-ui', 'build', 'static', 'js', 'main.js'));
+		const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'webview-ui', 'build', 'static', 'css', 'main.css'));
+
 		return `<!DOCTYPE html>
 		<html lang="en">
 		<head>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title>Xamun Dev</title>
+			<link rel="stylesheet" type="text/css" href="${styleUri}">
 		</head>
 		<body>
 			<div id="root"></div>
-			<script>
-				// Add your webview-side JavaScript here
-			</script>
+			<script src="${scriptUri}"></script>
 		</body>
 		</html>`;
 	}
@@ -133,9 +141,17 @@ export class XamunDevProvider implements vscode.WebviewViewProvider {
 	}
 
 	private async getStateToPostToWebview() {
-		// Implement this method to return the current state
 		return {
-			// Add state properties here
+			version: vscode.extensions.getExtension("saoudrizwan.xamun-dev")?.packageJSON.version,
+			xamunMessages: this.xamunDev?.xamunMessages || [],
+			taskHistory: await this.context.globalState.get<HistoryItem[]>("taskHistory", []),
+			apiConfiguration: {
+				apiProvider: await this.context.globalState.get<ApiProvider>("apiProvider", "anthropic"),
+				apiModelId: await this.context.globalState.get<string>("apiModelId", "claude-3-sonnet-20240229"),
+				apiKey: await this.context.secrets.get("apiKey"),
+				// Add other API configuration properties as needed
+			},
+			// Add other state properties as needed
 		};
 	}
 

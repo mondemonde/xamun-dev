@@ -96,13 +96,75 @@ export class XamunDev {
 	}
 
 	private async resumeTaskFromHistory(historyItem: HistoryItem) {
-		// Implementation for resuming task from history
-		// ... (implement this method)
+		this.xamunMessages = historyItem.messages
+		await this.updateWebview()
 	}
 
 	private async startTask(task?: string, images?: string[]) {
-		// Implementation for starting a new task
-		// ... (implement this method)
+		if (task) {
+			const newMessage: XamunMessage = {
+				type: "ask",
+				ask: "command",
+				text: task,
+				ts: Date.now(),
+			}
+			this.xamunMessages.push(newMessage)
+		}
+		if (images && images.length > 0) {
+			const newMessage: XamunMessage = {
+				type: "say",
+				say: "text",
+				text: "Images uploaded:",
+				images: images,
+				ts: Date.now(),
+			}
+			this.xamunMessages.push(newMessage)
+		}
+		await this.updateWebview()
+		await this.processNextMessage()
+	}
+
+	private async updateWebview() {
+		const provider = this.providerRef.deref()
+		if (provider) {
+			await provider.postStateToWebview()
+		}
+	}
+
+	private async processNextMessage() {
+		// Implement the logic to process the next message
+		// This could involve calling the API, handling user input, etc.
+		// For now, we'll just add a placeholder response
+		const response: XamunMessage = {
+			type: "say",
+			say: "text",
+			text: "I'm Xamun Dev, how can I assist you with your task?",
+			ts: Date.now(),
+		}
+		this.xamunMessages.push(response)
+		await this.updateWebview()
+	}
+
+	async handleUserInput(input: string, images?: string[]) {
+		const newMessage: XamunMessage = {
+			type: "ask",
+			ask: "command",
+			text: input,
+			ts: Date.now(),
+		}
+		this.xamunMessages.push(newMessage)
+		if (images && images.length > 0) {
+			const imageMessage: XamunMessage = {
+				type: "say",
+				say: "text",
+				text: "Images uploaded:",
+				images: images,
+				ts: Date.now(),
+			}
+			this.xamunMessages.push(imageMessage)
+		}
+		await this.updateWebview()
+		await this.processNextMessage()
 	}
 
 	// ... (rest of the class implementation)
