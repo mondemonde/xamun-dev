@@ -5,7 +5,7 @@ import os from "os"
 export const SYSTEM_PROMPT = async (
 	cwd: string,
 	supportsImages: boolean
-) => `You are Claude Dev, a highly skilled software developer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
+) => `You are Xamun Dev, a highly skilled software developer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
 
 ====
  

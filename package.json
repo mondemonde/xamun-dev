@@ -1,6 +1,6 @@
 {
-  "name": "claude-dev",
-  "displayName": "Claude Dev",
+  "name": "xamun-dev",
+  "displayName": "Xamun Dev",
   "description": "Autonomous coding agent right in your IDE, capable of creating/editing files, executing commands, and more with your permission every step of the way.",
   "version": "1.9.7",
   "icon": "icons/icon.png",
@@ -29,7 +29,7 @@
     "Testing"
   ],
   "keywords": [
-    "claude",
+    "xamun",
     "coding",
     "agent",
     "autonomous",
@@ -38,75 +38,86 @@
     "ai",
     "llama"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:xamun-dev.plusButtonTapped",
+    "onCommand:xamun-dev.historyButtonTapped",
+    "onCommand:xamun-dev.popoutButtonTapped",
+    "onCommand:xamun-dev.settingsButtonTapped",
+    "onCommand:xamun-dev.openInNewTab",
+    "onView:xamun-dev.SidebarProvider"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "claude-dev-ActivityBar",
-          "title": "Claude Dev",
+          "id": "xamun-dev-ActivityBar",
+          "title": "Xamun Dev",
           "icon": "$(robot)"
         }
       ]
     },
     "views": {
-      "claude-dev-ActivityBar": [
+      "xamun-dev-ActivityBar": [
         {
           "type": "webview",
-          "id": "claude-dev.SidebarProvider",
-          "name": ""
+          "id": "xamun-dev.SidebarProvider",
+          "name": "Xamun Dev"
         }
       ]
     },
     "commands": [
       {
-        "command": "claude-dev.plusButtonTapped",
-        "title": "New Task",
-        "icon": "$(add)"
+        "command": "xamun-dev.plusButtonTapped",
+        "title": "Xamun Dev: New Task",
+        "icon": "$(add)",
+        "category": "Xamun Dev"
       },
       {
-        "command": "claude-dev.historyButtonTapped",
-        "title": "History",
-        "icon": "$(history)"
+        "command": "xamun-dev.historyButtonTapped",
+        "title": "Xamun Dev: History",
+        "icon": "$(history)",
+        "category": "Xamun Dev"
       },
       {
-        "command": "claude-dev.popoutButtonTapped",
-        "title": "Open in Editor",
-        "icon": "$(link-external)"
+        "command": "xamun-dev.popoutButtonTapped",
+        "title": "Xamun Dev: Open in Editor",
+        "icon": "$(link-external)",
+        "category": "Xamun Dev"
       },
       {
-        "command": "claude-dev.settingsButtonTapped",
-        "title": "Settings",
-        "icon": "$(settings-gear)"
+        "command": "xamun-dev.settingsButtonTapped",
+        "title": "Xamun Dev: Settings",
+        "icon": "$(settings-gear)",
+        "category": "Xamun Dev"
       },
       {
-        "command": "claude-dev.openInNewTab",
-        "title": "Open In New Tab",
-        "category": "Claude Dev"
+        "command": "xamun-dev.openInNewTab",
+        "title": "Xamun Dev: Open In New Tab",
+        "category": "Xamun Dev"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "claude-dev.plusButtonTapped",
+          "command": "xamun-dev.plusButtonTapped",
           "group": "navigation@1",
-          "when": "view == claude-dev.SidebarProvider"
+          "when": "view == xamun-dev.SidebarProvider"
         },
         {
-          "command": "claude-dev.historyButtonTapped",
+          "command": "xamun-dev.historyButtonTapped",
           "group": "navigation@2",
-          "when": "view == claude-dev.SidebarProvider"
+          "when": "view == xamun-dev.SidebarProvider"
         },
         {
-          "command": "claude-dev.popoutButtonTapped",
+          "command": "xamun-dev.popoutButtonTapped",
           "group": "navigation@3",
-          "when": "view == claude-dev.SidebarProvider"
+          "when": "view == xamun-dev.SidebarProvider"
         },
         {
-          "command": "claude-dev.settingsButtonTapped",
+          "command": "xamun-dev.settingsButtonTapped",
           "group": "navigation@4",
-          "when": "view == claude-dev.SidebarProvider"
+          "when": "view == xamun-dev.SidebarProvider"
         }
       ]
     }

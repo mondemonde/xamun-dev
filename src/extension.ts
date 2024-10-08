@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 	outputChannel = vscode.window.createOutputChannel("Claude Dev")
 	context.subscriptions.push(outputChannel)
 
-	outputChannel.appendLine("Claude Dev extension activated")
+	outputChannel.appendLine("Xamun Dev extension activated")
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -48,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
 	)
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand("claude-dev.plusButtonTapped", async () => {
+		vscode.commands.registerCommand("xamun-dev.plusButtonTapped", async () => {
 			outputChannel.appendLine("Plus button tapped")
 			await sidebarProvider.clearTask()
 			await sidebarProvider.postStateToWebview()
@@ -57,7 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 	)
 
 	const openClaudeDevInNewTab = async () => {
-		outputChannel.appendLine("Opening Claude Dev in new tab")
+		outputChannel.appendLine("Opening Xamun Dev in new tab")
 		// (this example uses webviewProvider activation event which is necessary to deserialize cached webview, but since we use retainContextWhenHidden, we don't need to use that event)
 		// https://github.com/microsoft/vscode-extension-samples/blob/main/webview-sample/src/extension.ts
 		const tabProvider = new ClaudeDevProvider(context, outputChannel)
@@ -71,7 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 		const targetCol = hasVisibleEditors ? Math.max(lastCol + 1, 1) : vscode.ViewColumn.Two
 
-		const panel = vscode.window.createWebviewPanel(ClaudeDevProvider.tabPanelId, "Claude Dev", targetCol, {
+		const panel = vscode.window.createWebviewPanel(ClaudeDevProvider.tabPanelId, "Xamun Dev", targetCol, {
 			enableScripts: true,
 			retainContextWhenHidden: true,
 			localResourceRoots: [context.extensionUri],
@@ -89,19 +89,19 @@ export function activate(context: vscode.ExtensionContext) {
 		await vscode.commands.executeCommand("workbench.action.lockEditorGroup")
 	}
 
-	context.subscriptions.push(vscode.commands.registerCommand("claude-dev.popoutButtonTapped", openClaudeDevInNewTab))
-	context.subscriptions.push(vscode.commands.registerCommand("claude-dev.openInNewTab", openClaudeDevInNewTab))
+	context.subscriptions.push(vscode.commands.registerCommand("xamun-dev.popoutButtonTapped", openClaudeDevInNewTab))
+	context.subscriptions.push(vscode.commands.registerCommand("xamun-dev.openInNewTab", openClaudeDevInNewTab))
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand("claude-dev.settingsButtonTapped", () => {
-			//const message = "claude-dev.settingsButtonTapped!"
+		vscode.commands.registerCommand("xamun-dev.settingsButtonTapped", () => {
+			//const message = "xamun-dev.settingsButtonTapped!"
 			//vscode.window.showInformationMessage(message)
 			sidebarProvider.postMessageToWebview({ type: "action", action: "settingsButtonTapped" })
 		})
 	)
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand("claude-dev.historyButtonTapped", () => {
+		vscode.commands.registerCommand("xamun-dev.historyButtonTapped", () => {
 			sidebarProvider.postMessageToWebview({ type: "action", action: "historyButtonTapped" })
 		})
 	)

@@ -10,7 +10,7 @@ The Claude Dev extension exposes an API that can be used by other extensions. To
     const claudeDevExtension = vscode.extensions.getExtension<ClaudeDevAPI>("saoudrizwan.claude-dev")
 
     if (!claudeDevExtension?.isActive) {
-    	throw new Error("Claude Dev extension is not activated")
+    	throw new Error("Xamun Dev extension is not activated")
     }
 
     const claudeDev = claudeDevExtension.exports
