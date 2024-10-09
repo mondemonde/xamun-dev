@@ -21,35 +21,29 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		setAlwaysAllowReadOnly,
 	} = useExtensionState()
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
+	const [showWarning, setShowWarning] = useState(false)
 
 	const handleSubmit = () => {
-		const apiValidationResult = validateApiConfiguration(apiConfiguration)
+		const config = apiConfiguration || {}
+		const apiValidationResult = validateApiConfiguration(config)
 
 		setApiErrorMessage(apiValidationResult)
 
-		if (!apiValidationResult) {
-			vscode.postMessage({ type: "apiConfiguration", apiConfiguration })
-			vscode.postMessage({ type: "customInstructions", text: customInstructions })
-			vscode.postMessage({ type: "alwaysAllowReadOnly", bool: alwaysAllowReadOnly })
-			onDone()
+		if (!config.apiKey) {
+			setShowWarning(true)
 		}
+
+		// Always allow submission, even without an API key
+		vscode.postMessage({ type: "apiConfiguration", apiConfiguration: config })
+		vscode.postMessage({ type: "customInstructions", text: customInstructions })
+		vscode.postMessage({ type: "alwaysAllowReadOnly", bool: alwaysAllowReadOnly })
+		onDone()
 	}
 
 	useEffect(() => {
 		setApiErrorMessage(undefined)
+		setShowWarning(false)
 	}, [apiConfiguration])
-
-	// validate as soon as the component is mounted
-	/*
-	useEffect will use stale values of variables if they are not included in the dependency array. so trying to use useEffect with a dependency array of only one value for example will use any other variables' old values. In most cases you don't want this, and should opt to use react-use hooks.
-	
-	useEffect(() => {
-		// uses someVar and anotherVar
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [someVar])
-
-	If we only want to run code once on mount we can use react-use's useEffectOnce or useMount
-	*/
 
 	const handleResetState = () => {
 		vscode.postMessage({ type: "resetState" })
@@ -83,6 +77,11 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 				style={{ flexGrow: 1, overflowY: "scroll", paddingRight: 8, display: "flex", flexDirection: "column" }}>
 				<div style={{ marginBottom: 5 }}>
 					<ApiOptions showModelOptions={true} apiErrorMessage={apiErrorMessage} />
+					{showWarning && !apiConfiguration?.apiKey && (
+						<p style={{ color: "var(--vscode-warningForeground)", fontSize: "12px", marginTop: "5px" }}>
+							Warning: No API key provided. Some features may not work without an API key.
+						</p>
+					)}
 				</div>
 
 				<div style={{ marginBottom: 5 }}>
@@ -149,8 +148,10 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 						marginTop: "auto",
 						padding: "10px 8px 15px 0px",
 					}}>
+					<hr />	
+					<h3>Acknowledgement</h3>
 					<p style={{ wordWrap: "break-word", margin: 0, padding: 0 }}>
-						If you have any questions or feedback, feel free to open an issue at{" "}
+						This extension is based on the original work of saoudrizwan{" "}
 						<VSCodeLink href="https://github.com/saoudrizwan/claude-dev" style={{ display: "inline" }}>
 							https://github.com/saoudrizwan/claude-dev
 						</VSCodeLink>

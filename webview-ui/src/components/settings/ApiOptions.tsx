@@ -33,6 +33,9 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage }: ApiOptionsProps) => {
 
 	return (
 		<div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+			<div style={{ marginBottom: 10, fontWeight: 'bold', fontSize: '14px' }}>
+				Current Provider: Anthropic
+			</div>
 			<div>
 				<VSCodeTextField
 					value={apiConfiguration?.apiKey || ""}

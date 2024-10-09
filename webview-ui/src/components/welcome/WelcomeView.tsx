@@ -9,15 +9,18 @@ const WelcomeView = () => {
 	const { apiConfiguration } = useExtensionState()
 
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
-
-	const disableLetsGoButton = apiErrorMessage != null
+	const [showWarning, setShowWarning] = useState(false)
 
 	const handleSubmit = () => {
+		if (!apiConfiguration?.apiKey) {
+			setShowWarning(true)
+		}
 		vscode.postMessage({ type: "apiConfiguration", apiConfiguration })
 	}
 
 	useEffect(() => {
 		setApiErrorMessage(validateApiConfiguration(apiConfiguration))
+		setShowWarning(false)
 	}, [apiConfiguration])
 
 	return (
@@ -37,8 +40,13 @@ const WelcomeView = () => {
 			<b>To get started, this extension needs an API provider for Claude 3.5 Sonnet.</b>
 
 			<div style={{ marginTop: "10px" }}>
-				<ApiOptions showModelOptions={false} />
-				<VSCodeButton onClick={handleSubmit} disabled={disableLetsGoButton} style={{ marginTop: "3px" }}>
+				<ApiOptions showModelOptions={false} apiErrorMessage={apiErrorMessage} />
+				{showWarning && !apiConfiguration?.apiKey && (
+					<p style={{ color: "var(--vscode-warningForeground)", fontSize: "12px", marginTop: "5px" }}>
+						Warning: No API key provided. Some features may not work without an API key.
+					</p>
+				)}
+				<VSCodeButton onClick={handleSubmit} style={{ marginTop: "3px" }}>
 					Let's go!
 				</VSCodeButton>
 			</div>
