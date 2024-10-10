@@ -4,6 +4,7 @@ import { useExtensionState } from "../../context/ExtensionStateContext"
 import { validateApiConfiguration } from "../../utils/validate"
 import { vscode } from "../../utils/vscode"
 import ApiOptions from "./ApiOptions"
+import { ApiConfiguration } from "../../../../src/shared/api"
 
 const IS_DEV = false // FIXME: use flags when packaging
 
@@ -14,6 +15,7 @@ type SettingsViewProps = {
 const SettingsView = ({ onDone }: SettingsViewProps) => {
 	const {
 		apiConfiguration,
+		setApiConfiguration,
 		version,
 		customInstructions,
 		setCustomInstructions,
@@ -22,21 +24,36 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	} = useExtensionState()
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
 
-	const handleSubmit = () => {
-		let configToSave = apiConfiguration || {}
-
-		// If no provider is set, default to Anthropic
-		if (!("anthropic" in configToSave) && !("openai" in configToSave) && !("bedrock" in configToSave) &&
-			!("gemini" in configToSave) && !("ollama" in configToSave) && !("openrouter" in configToSave) &&
-			!("vertex" in configToSave)) {
-			configToSave = { ...configToSave, anthropic: {} } as typeof configToSave & { anthropic: {} }
+	useEffect(() => {
+		// Ensure a default configuration is set with Anthropic as the provider
+		if (!apiConfiguration || apiConfiguration.apiProvider !== "anthropic") {
+			setApiConfiguration({
+				apiProvider: "anthropic",
+				apiKey: apiConfiguration?.apiKey || '',
+				apiModelId: apiConfiguration?.apiModelId || 'claude-2'
+			} as ApiConfiguration)
 		}
+	}, [])
+
+	useEffect(() => {
+		setApiErrorMessage(undefined)
+		console.log("API Configuration updated:", apiConfiguration)
+	}, [apiConfiguration])
+
+	const saveSettings = () => {
+		const configToSave: ApiConfiguration = {
+			...apiConfiguration,
+			apiProvider: "anthropic",
+			apiKey: apiConfiguration?.apiKey || '',
+			apiModelId: apiConfiguration?.apiModelId || 'claude-2'
+		} as ApiConfiguration
 
 		const apiValidationResult = validateApiConfiguration(configToSave)
 
 		setApiErrorMessage(apiValidationResult)
 
 		if (!apiValidationResult) {
+			console.log("Saving API Configuration:", configToSave)
 			vscode.postMessage({ type: "apiConfiguration", apiConfiguration: configToSave })
 			vscode.postMessage({ type: "customInstructions", text: customInstructions })
 			vscode.postMessage({ type: "alwaysAllowReadOnly", bool: alwaysAllowReadOnly })
@@ -44,23 +61,11 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		}
 	}
 
-	useEffect(() => {
-		setApiErrorMessage(undefined)
-	}, [apiConfiguration])
-
 	const handleResetState = () => {
 		vscode.postMessage({ type: "resetState" })
 	}
 
 	const getProviderName = (): string => {
-		if (!apiConfiguration || Object.keys(apiConfiguration).length === 0) return "Anthropic"
-		if ("openai" in apiConfiguration) return "OpenAI"
-		if ("anthropic" in apiConfiguration) return "Anthropic"
-		if ("bedrock" in apiConfiguration) return "Bedrock"
-		if ("gemini" in apiConfiguration) return "Gemini"
-		if ("ollama" in apiConfiguration) return "Ollama"
-		if ("openrouter" in apiConfiguration) return "OpenRouter"
-		if ("vertex" in apiConfiguration) return "Vertex AI"
 		return "Anthropic"
 	}
 
@@ -86,7 +91,7 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 					paddingRight: 17,
 				}}>
 				<h3 style={{ color: "var(--vscode-foreground)", margin: 0 }}>Settings</h3>
-				<VSCodeButton onClick={handleSubmit}>Done</VSCodeButton>
+				<VSCodeButton onClick={saveSettings}>Done</VSCodeButton>
 			</div>
 			<div
 				style={{ flexGrow: 1, overflowY: "scroll", paddingRight: 8, display: "flex", flexDirection: "column" }}>
@@ -98,7 +103,10 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 				</div>
 
 				<div style={{ marginBottom: 5 }}>
-					<ApiOptions showModelOptions={true} apiErrorMessage={apiErrorMessage} />
+					<ApiOptions 
+						showModelOptions={true} 
+						apiErrorMessage={apiErrorMessage}
+					/>
 				</div>
 
 				<div style={{ marginBottom: 5 }}>
