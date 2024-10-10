@@ -23,12 +23,21 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 	const [apiErrorMessage, setApiErrorMessage] = useState<string | undefined>(undefined)
 
 	const handleSubmit = () => {
-		const apiValidationResult = validateApiConfiguration(apiConfiguration)
+		let configToSave = apiConfiguration || {}
+
+		// If no provider is set, default to Anthropic
+		if (!("anthropic" in configToSave) && !("openai" in configToSave) && !("bedrock" in configToSave) &&
+			!("gemini" in configToSave) && !("ollama" in configToSave) && !("openrouter" in configToSave) &&
+			!("vertex" in configToSave)) {
+			configToSave = { ...configToSave, anthropic: {} } as typeof configToSave & { anthropic: {} }
+		}
+
+		const apiValidationResult = validateApiConfiguration(configToSave)
 
 		setApiErrorMessage(apiValidationResult)
 
 		if (!apiValidationResult) {
-			vscode.postMessage({ type: "apiConfiguration", apiConfiguration })
+			vscode.postMessage({ type: "apiConfiguration", apiConfiguration: configToSave })
 			vscode.postMessage({ type: "customInstructions", text: customInstructions })
 			vscode.postMessage({ type: "alwaysAllowReadOnly", bool: alwaysAllowReadOnly })
 			onDone()
@@ -39,20 +48,20 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 		setApiErrorMessage(undefined)
 	}, [apiConfiguration])
 
-	// validate as soon as the component is mounted
-	/*
-	useEffect will use stale values of variables if they are not included in the dependency array. so trying to use useEffect with a dependency array of only one value for example will use any other variables' old values. In most cases you don't want this, and should opt to use react-use hooks.
-	
-	useEffect(() => {
-		// uses someVar and anotherVar
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [someVar])
-
-	If we only want to run code once on mount we can use react-use's useEffectOnce or useMount
-	*/
-
 	const handleResetState = () => {
 		vscode.postMessage({ type: "resetState" })
+	}
+
+	const getProviderName = (): string => {
+		if (!apiConfiguration || Object.keys(apiConfiguration).length === 0) return "Anthropic"
+		if ("openai" in apiConfiguration) return "OpenAI"
+		if ("anthropic" in apiConfiguration) return "Anthropic"
+		if ("bedrock" in apiConfiguration) return "Bedrock"
+		if ("gemini" in apiConfiguration) return "Gemini"
+		if ("ollama" in apiConfiguration) return "Ollama"
+		if ("openrouter" in apiConfiguration) return "OpenRouter"
+		if ("vertex" in apiConfiguration) return "Vertex AI"
+		return "Anthropic"
 	}
 
 	return (
@@ -81,6 +90,13 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 			</div>
 			<div
 				style={{ flexGrow: 1, overflowY: "scroll", paddingRight: 8, display: "flex", flexDirection: "column" }}>
+				<div style={{ marginBottom: 15 }}>
+					<span style={{ fontWeight: "500" }}>Current Provider:</span>
+					<span style={{ marginLeft: "10px", color: "var(--vscode-descriptionForeground)" }}>
+						{getProviderName()}
+					</span>
+				</div>
+
 				<div style={{ marginBottom: 5 }}>
 					<ApiOptions showModelOptions={true} apiErrorMessage={apiErrorMessage} />
 				</div>
