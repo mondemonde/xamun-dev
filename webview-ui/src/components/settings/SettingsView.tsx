@@ -173,8 +173,9 @@ const SettingsView = ({ onDone }: SettingsViewProps) => {
 						marginTop: "auto",
 						padding: "10px 8px 15px 0px",
 					}}>
+						<h3>Acknowledgement</h3>
 					<p style={{ wordWrap: "break-word", margin: 0, padding: 0 }}>
-						If you have any questions or feedback, feel free to open an issue at{" "}
+						This extension is based on the original of saoudrizwan{" "}
 						<VSCodeLink href="https://github.com/saoudrizwan/claude-dev" style={{ display: "inline" }}>
 							https://github.com/saoudrizwan/claude-dev
 						</VSCodeLink>
