@@ -2,7 +2,7 @@
   "name": "xamun-dev",
   "displayName": "Xamun Dev",
   "description": "Autonomous coding agent right in your IDE, capable of creating/editing files, executing commands, and more with your permission every step of the way.",
-  "version": "1.9.7",
+  "version": "1.9.72",
   "icon": "icons/x-128.png",
   "galleryBanner": {
     "color": "#1E1E1E",
@@ -12,13 +12,13 @@
     "vscode": "^1.84.0"
   },
   "author": {
-    "name": "Saoud Rizwan"
+    "name": "xamun team"
   },
   "license": "MIT",
-  "publisher": "saoudrizwan",
+  "publisher": "mondemonde",
   "repository": {
     "type": "git",
-    "url": "https://github.com/saoudrizwan/claude-dev"
+    "url": "https://github.com/mondemonde/xamun-dev"
   },
   "categories": [
     "AI",
@@ -53,7 +53,8 @@
         {
           "id": "xamun-dev-ActivityBar",
           "title": "Xamun Dev",
-          "icon": "$(robot)"
+          "icon": "icons/x-128.png"
+          
         }
       ]
     },
@@ -62,38 +63,39 @@
         {
           "type": "webview",
           "id": "xamun-dev.SidebarProvider",
-          "name": "Xamun Dev"
+          "name": "Xamun Dev",
+          "icon": "icons/x-128.png"
         }
       ]
     },
     "commands": [
       {
         "command": "xamun-dev.plusButtonTapped",
-        "title": "Xamun Dev: New Task",
+        "title": "New Task",
         "icon": "$(add)",
         "category": "Xamun Dev"
       },
       {
         "command": "xamun-dev.historyButtonTapped",
-        "title": "Xamun Dev: History",
+        "title": "History",
         "icon": "$(history)",
         "category": "Xamun Dev"
       },
       {
         "command": "xamun-dev.popoutButtonTapped",
-        "title": "Xamun Dev: Open in Editor",
+        "title": "Open in Editor",
         "icon": "$(link-external)",
         "category": "Xamun Dev"
       },
       {
         "command": "xamun-dev.settingsButtonTapped",
-        "title": "Xamun Dev: Settings",
+        "title": "Settings",
         "icon": "$(settings-gear)",
         "category": "Xamun Dev"
       },
       {
         "command": "xamun-dev.openInNewTab",
-        "title": "Xamun Dev: Open In New Tab",
+        "title": "Open In New Tab",
         "category": "Xamun Dev"
       }
     ],
