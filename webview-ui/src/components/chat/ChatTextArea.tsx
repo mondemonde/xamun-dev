@@ -24,6 +24,7 @@ interface ChatTextAreaProps {
 	onSelectImages: () => void
 	shouldDisableImages: boolean
 	onHeightChange?: (height: number) => void
+	selectedPromptContent?: string
 }
 
 const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
@@ -39,6 +40,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			onSelectImages,
 			shouldDisableImages,
 			onHeightChange,
+			selectedPromptContent,
 		},
 		ref
 	) => {
@@ -57,6 +59,14 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 		const [justDeletedSpaceAfterMention, setJustDeletedSpaceAfterMention] = useState(false)
 		const [intendedCursorPosition, setIntendedCursorPosition] = useState<number | null>(null)
 		const contextMenuContainerRef = useRef<HTMLDivElement>(null)
+
+		useEffect(() => {
+			if (selectedPromptContent) {
+				setInputValue(selectedPromptContent)
+				setCursorPosition(selectedPromptContent.length)
+				setIntendedCursorPosition(selectedPromptContent.length)
+			}
+		}, [selectedPromptContent, setInputValue])
 
 		const queryItems = useMemo(() => {
 			return [

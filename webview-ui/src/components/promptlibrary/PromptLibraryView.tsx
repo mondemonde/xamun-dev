@@ -10,9 +10,10 @@ interface PromptLibraryViewProps {
   onDone: () => void;
   isTab?: boolean;
   selectedFilePath?: string;
+  onUsePrompt: (content: string) => void;
 }
 
-const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = false, selectedFilePath }) => {
+const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = false, selectedFilePath, onUsePrompt }) => {
   // This is a placeholder. We'll need to implement the actual fetching of prompts later.
   const predefinedPrompts: Prompt[] = [
     { id: '1', title: 'Explain File', content: 'Explain this file' },
@@ -77,6 +78,13 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
     color: '#d4d4d4', // Light gray for content
   };
 
+  const handleUsePrompt = (content: string) => {
+    onUsePrompt(content);
+    if (!isTab) {
+      onDone();
+    }
+  };
+
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
@@ -95,7 +103,7 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
           <li key={prompt.id} style={listItemStyle}>
             <h3 style={titleStyle}>{prompt.title}</h3>
             <p style={contentStyle}>{prompt.content.substring(0, 100)}...</p>
-            <button style={buttonStyle}>Use Prompt</button>
+            <button style={buttonStyle} onClick={() => handleUsePrompt(prompt.content)}>Use Prompt</button>
           </li>
         ))}
       </ul>

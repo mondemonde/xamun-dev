@@ -17,6 +17,7 @@ const AppContent = () => {
 	const [showAnnouncement, setShowAnnouncement] = useState(false)
 	const [isTab, setIsTab] = useState(false)
 	const [selectedFilePath, setSelectedFilePath] = useState<string | undefined>(undefined)
+	const [selectedPromptContent, setSelectedPromptContent] = useState<string | undefined>(undefined)
 
 	const handleMessage = useCallback((e: MessageEvent) => {
 		const message: ExtensionMessage = e.data
@@ -59,6 +60,11 @@ const AppContent = () => {
 		}
 	}, [shouldShowAnnouncement])
 
+	const handleUsePrompt = useCallback((content: string) => {
+		setSelectedPromptContent(content)
+		setShowPromptLibrary(false)
+	}, [])
+
 	if (!didHydrateState) {
 		return null
 	}
@@ -72,6 +78,7 @@ const AppContent = () => {
 					onDone={() => setShowPromptLibrary(false)} 
 					isTab={isTab} 
 					selectedFilePath={selectedFilePath}
+					onUsePrompt={handleUsePrompt}
 				/>
 			)}
 			{/* Do not conditionally load ChatView, it's expensive and there's state we don't want to lose (user input, disableInput, askResponse promise, etc.) */}
@@ -86,6 +93,7 @@ const AppContent = () => {
 				hideAnnouncement={() => {
 					setShowAnnouncement(false)
 				}}
+				selectedPromptContent={selectedPromptContent}
 			/>
 		</>
 	)
