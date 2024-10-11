@@ -5,6 +5,7 @@ import { ClaudeDevProvider } from "./core/webview/ClaudeDevProvider"
 import delay from "delay"
 import { createClaudeDevAPI } from "./exports"
 import "./utils/path" // necessary to have access to String.prototype.toPosix
+import { exploreWithXamun } from "./commands/exploreWithXamun"
 
 /*
 Built using https://github.com/microsoft/vscode-webview-ui-toolkit
@@ -105,6 +106,9 @@ export function activate(context: vscode.ExtensionContext) {
 			sidebarProvider.postMessageToWebview({ type: "action", action: "historyButtonTapped" })
 		})
 	)
+
+	// Register the new "Explore with Xamun" command
+	context.subscriptions.push(exploreWithXamun(context))
 
 	/*
 	We use the text document content provider API to show the left side for diff view by creating a virtual document for the original content. This makes it readonly so users know to edit the right side if they want to keep their changes.

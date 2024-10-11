@@ -96,6 +96,11 @@
         "command": "xamun-dev.openInNewTab",
         "title": "Open In New Tab",
         "category": "Xamun Dev"
+      },
+      {
+        "command": "xamun-dev.exploreWithXamun",
+        "title": "Explore with Xamun",
+        "category": "Xamun Dev"
       }
     ],
     "menus": {
@@ -119,6 +124,12 @@
           "command": "xamun-dev.settingsButtonTapped",
           "group": "navigation@4",
           "when": "view == xamun-dev.SidebarProvider"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "xamun-dev.exploreWithXamun",
+          "group": "navigation"
         }
       ]
     }
