@@ -7,12 +7,13 @@ import { HistoryItem } from "./HistoryItem"
 export interface ExtensionMessage {
 	type: "action" | "state" | "selectedImages" | "ollamaModels" | "theme" | "workspaceUpdated" | "invoke"
 	text?: string
-	action?: "chatButtonTapped" | "settingsButtonTapped" | "historyButtonTapped" | "didBecomeVisible"
+	action?: "chatButtonTapped" | "settingsButtonTapped" | "historyButtonTapped" | "promptLibraryButtonTapped" | "didBecomeVisible"
 	invoke?: "sendMessage" | "primaryButtonClick" | "secondaryButtonClick"
 	state?: ExtensionState
 	images?: string[]
 	models?: string[]
 	filePaths?: string[]
+	isTab?: boolean
 }
 
 export interface ExtensionState {

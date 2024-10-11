@@ -44,6 +44,7 @@
     "onCommand:xamun-dev.popoutButtonTapped",
     "onCommand:xamun-dev.settingsButtonTapped",
     "onCommand:xamun-dev.openInNewTab",
+    "onCommand:xamun-dev.promptLibraryButtonTapped",
     "onView:xamun-dev.SidebarProvider"
   ],
   "main": "./dist/extension.js",
@@ -101,6 +102,12 @@
         "command": "xamun-dev.exploreWithXamun",
         "title": "Explore with Xamun",
         "category": "Xamun Dev"
+      },
+      {
+        "command": "xamun-dev.promptLibraryButtonTapped",
+        "title": "Prompt Library",
+        "icon": "$(library)",
+        "category": "Xamun Dev"
       }
     ],
     "menus": {
@@ -116,13 +123,18 @@
           "when": "view == xamun-dev.SidebarProvider"
         },
         {
-          "command": "xamun-dev.popoutButtonTapped",
+          "command": "xamun-dev.promptLibraryButtonTapped",
           "group": "navigation@3",
           "when": "view == xamun-dev.SidebarProvider"
         },
         {
-          "command": "xamun-dev.settingsButtonTapped",
+          "command": "xamun-dev.popoutButtonTapped",
           "group": "navigation@4",
+          "when": "view == xamun-dev.SidebarProvider"
+        },
+        {
+          "command": "xamun-dev.settingsButtonTapped",
+          "group": "navigation@5",
           "when": "view == xamun-dev.SidebarProvider"
         }
       ],
