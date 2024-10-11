@@ -16,6 +16,7 @@ const AppContent = () => {
 	const [showPromptLibrary, setShowPromptLibrary] = useState(false)
 	const [showAnnouncement, setShowAnnouncement] = useState(false)
 	const [isTab, setIsTab] = useState(false)
+	const [selectedFilePath, setSelectedFilePath] = useState<string | undefined>(undefined)
 
 	const handleMessage = useCallback((e: MessageEvent) => {
 		const message: ExtensionMessage = e.data
@@ -37,6 +38,7 @@ const AppContent = () => {
 						setShowHistory(false)
 						setShowPromptLibrary(true)
 						setIsTab(message.isTab || false)
+						setSelectedFilePath(message.selectedFilePath)
 						break
 					case "chatButtonTapped":
 						setShowSettings(false)
@@ -65,7 +67,13 @@ const AppContent = () => {
 		<>
 			{showSettings && <SettingsView onDone={() => setShowSettings(false)} />}
 			{showHistory && <HistoryView onDone={() => setShowHistory(false)} />}
-			{showPromptLibrary && <PromptLibraryView onDone={() => setShowPromptLibrary(false)} isTab={isTab} />}
+			{showPromptLibrary && (
+				<PromptLibraryView 
+					onDone={() => setShowPromptLibrary(false)} 
+					isTab={isTab} 
+					selectedFilePath={selectedFilePath}
+				/>
+			)}
 			{/* Do not conditionally load ChatView, it's expensive and there's state we don't want to lose (user input, disableInput, askResponse promise, etc.) */}
 			<ChatView
 				showHistoryView={() => {

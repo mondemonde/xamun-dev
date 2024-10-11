@@ -14,6 +14,7 @@ export interface ExtensionMessage {
 	models?: string[]
 	filePaths?: string[]
 	isTab?: boolean
+	selectedFilePath?: string // New property for the selected file path
 }
 
 export interface ExtensionState {

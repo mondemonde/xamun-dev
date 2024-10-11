@@ -7,8 +7,17 @@ export function exploreWithXamun(context: vscode.ExtensionContext) {
             const filePath = uri.fsPath;
             const fileName = path.basename(filePath);
             
-            // Open the Prompt Library in a new tab
-            vscode.commands.executeCommand('xamun-dev.openPromptLibraryInNewTab');
+            // Get the workspace folder
+            const workspaceFolder = vscode.workspace.getWorkspaceFolder(uri);
+            let relativePath = filePath;
+            
+            if (workspaceFolder) {
+                // Calculate the relative path
+                relativePath = path.relative(workspaceFolder.uri.fsPath, filePath);
+            }
+            
+            // Open the Prompt Library in a new tab with the relative file path
+            vscode.commands.executeCommand('xamun-dev.openPromptLibraryInNewTab', relativePath);
             
             // Show an information message
             vscode.window.showInformationMessage(`Exploring ${fileName} with Xamun Dev Prompt Library`);

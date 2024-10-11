@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	)
 
-	const openClaudeDevInNewTab = async (view: 'main' | 'promptLibrary' = 'main') => {
+	const openClaudeDevInNewTab = async (view: 'main' | 'promptLibrary' = 'main', selectedFilePath?: string) => {
 		outputChannel.appendLine(`Opening Xamun Dev ${view} view in new tab`)
 		const tabProvider = new ClaudeDevProvider(context, outputChannel)
 		const lastCol = Math.max(...vscode.window.visibleTextEditors.map((editor) => editor.viewColumn || 0))
@@ -69,7 +69,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 		// Open the specific view
 		if (view === 'promptLibrary') {
-			tabProvider.postMessageToWebview({ type: "action", action: "promptLibraryButtonTapped", isTab: true })
+			tabProvider.postMessageToWebview({ 
+				type: "action", 
+				action: "promptLibraryButtonTapped", 
+				isTab: true,
+				selectedFilePath: selectedFilePath
+			})
 		}
 
 		// Lock the editor group so clicking on files doesn't open them over the panel
@@ -79,7 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand("xamun-dev.popoutButtonTapped", () => openClaudeDevInNewTab('main')))
 	context.subscriptions.push(vscode.commands.registerCommand("xamun-dev.openInNewTab", () => openClaudeDevInNewTab('main')))
-	context.subscriptions.push(vscode.commands.registerCommand("xamun-dev.openPromptLibraryInNewTab", () => openClaudeDevInNewTab('promptLibrary')))
+	context.subscriptions.push(vscode.commands.registerCommand("xamun-dev.openPromptLibraryInNewTab", (selectedFilePath?: string) => openClaudeDevInNewTab('promptLibrary', selectedFilePath)))
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand("xamun-dev.settingsButtonTapped", () => {
