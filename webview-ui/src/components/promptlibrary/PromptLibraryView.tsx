@@ -61,14 +61,15 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
     marginBottom: '10px',
   };
 
-  const buttonStyle: React.CSSProperties = {
+  const buttonStyle = (disabled: boolean): React.CSSProperties => ({
     padding: '5px 10px',
-    backgroundColor: '#0e639c', // Darker blue
-    color: 'white',
+    backgroundColor: disabled ? '#4a4a4a' : '#0e639c', // Darker blue when enabled, gray when disabled
+    color: disabled ? '#a0a0a0' : 'white',
     border: 'none',
     borderRadius: '4px',
-    cursor: 'pointer',
-  };
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.6 : 1,
+  });
 
   const titleStyle: React.CSSProperties = {
     color: '#d0ced2', // Light xamun for titles
@@ -90,7 +91,7 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
       <div style={headerStyle}>
         <div style={headerTopStyle}>
           <h2 style={titleStyle}>Prompt Library</h2>
-          {!isTab && <button style={buttonStyle} onClick={onDone}>Close</button>}
+          {!isTab && <button style={buttonStyle(false)} onClick={onDone}>Close</button>}
         </div>
         {selectedFilePath && (
           <div style={filePathStyle}>
@@ -103,7 +104,13 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
           <li key={prompt.id} style={listItemStyle}>
             <h3 style={titleStyle}>{prompt.title}</h3>
             <p style={contentStyle}>{prompt.content.substring(0, 100)}...</p>
-            <button style={buttonStyle} onClick={() => handleUsePrompt(prompt.content)}>Use Prompt</button>
+            <button 
+              style={buttonStyle(!selectedFilePath)} 
+              onClick={() => handleUsePrompt(prompt.content)}
+              disabled={!selectedFilePath}
+            >
+              Use Prompt
+            </button>
           </li>
         ))}
       </ul>
