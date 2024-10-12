@@ -1,5 +1,5 @@
 const esbuild = require("esbuild")
-const fs = require("fs")
+const fs = require("fs-extra")
 const path = require("path")
 
 const production = process.argv.includes("--production")
@@ -62,6 +62,23 @@ const copyWasmFiles = {
 	},
 }
 
+const copyAiFiles = {
+	name: "copy-ai-files",
+	setup(build) {
+		build.onEnd(async () => {
+			const sourceDir = path.join(__dirname, "src", "ai")
+			const targetDir = path.join(__dirname, "dist", "ai")
+
+			try {
+				await fs.copy(sourceDir, targetDir, { overwrite: true })
+				console.log("Copied AI folder to dist/ai")
+			} catch (err) {
+				console.error("Error copying AI folder:", err)
+			}
+		})
+	},
+}
+
 const extensionConfig = {
 	bundle: true,
 	minify: production,
@@ -69,7 +86,7 @@ const extensionConfig = {
 	logLevel: "silent",
 	plugins: [
 		copyWasmFiles,
-		/* add to the end of plugins array */
+		copyAiFiles,
 		esbuildProblemMatcherPlugin,
 	],
 	entryPoints: ["src/extension.ts"],
