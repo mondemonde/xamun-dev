@@ -6,6 +6,7 @@ import delay from "delay"
 import { createClaudeDevAPI } from "./exports"
 import "./utils/path" // necessary to have access to String.prototype.toPosix
 import { exploreWithXamun } from "./commands/exploreWithXamun"
+import { logAiFiles2 } from "./aiFileLogger" // Import the new function
 
 /*
 Built using https://github.com/microsoft/vscode-webview-ui-toolkit
@@ -69,6 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		// Open the specific view
 		if (view === 'promptLibrary') {
+			logAiFiles2() // Log AI files when opening prompt library
 			tabProvider.postMessageToWebview({ 
 				type: "action", 
 				action: "promptLibraryButtonTapped", 
@@ -100,6 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand("xamun-dev.promptLibraryButtonTapped", () => {
+			logAiFiles2() // Log AI files when opening prompt library
 			sidebarProvider.postMessageToWebview({ type: "action", action: "promptLibraryButtonTapped", isTab: false })
 		})
 	)
