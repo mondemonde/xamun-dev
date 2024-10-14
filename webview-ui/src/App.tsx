@@ -50,6 +50,13 @@ const AppContent = () => {
 		}
 	}, [shouldShowAnnouncement])
 
+	useEffect(() => {
+		if (currentView === 'promptLibrary' && isTab) {
+			// Send the webviewReady message when the prompt library view is ready
+			vscode.postMessage({ type: 'webviewReady' });
+		}
+	}, [currentView, isTab]);
+
 	const handleUsePrompt = useCallback((content: string) => {
 		setSelectedPromptContent(content)
 		setCurrentView('chat');

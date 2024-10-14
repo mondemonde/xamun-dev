@@ -20,7 +20,8 @@ export interface WebviewMessage {
 		| "openImage"
 		| "openFile"
 		| "openMention"
-		| "clearSelectedPromptContent"  // Added the new action
+		| "clearSelectedPromptContent"
+		| "webviewReady"  // Added the new webviewReady type
 	text?: string
 	askResponse?: ClaudeAskResponse
 	apiConfiguration?: ApiConfiguration

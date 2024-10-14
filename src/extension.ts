@@ -68,6 +68,16 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 		tabProvider.resolveWebviewView(panel)
 
+		// Create a promise that resolves when the webview is ready
+		const webviewReady = new Promise<void>((resolve) => {
+			const messageListener = panel.webview.onDidReceiveMessage((message) => {
+				if (message.type === 'webviewReady') {
+					messageListener.dispose();
+					resolve();
+				}
+			});
+		});
+
 		// Open the specific view
 		if (view === 'promptLibrary') {
 			logAiFiles2() // Log AI files when opening prompt library
@@ -78,6 +88,10 @@ export function activate(context: vscode.ExtensionContext) {
 				selectedFilePath: selectedFilePath
 			})
 		}
+
+		// Wait for the webview to be ready before revealing the panel
+		await webviewReady;
+		panel.reveal(targetCol);
 
 		// Lock the editor group so clicking on files doesn't open them over the panel
 		await delay(100)
