@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { windowsToLinuxPath } from '../../utils/xamunHelper';
 
 interface Prompt {
   id: string;
@@ -14,9 +15,11 @@ interface PromptLibraryViewProps {
 }
 
 const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = false, selectedFilePath, onUsePrompt }) => {
+  const [additionalText, setAdditionalText] = useState('');
+
   // This is a placeholder. We'll need to implement the actual fetching of prompts later.
   const predefinedPrompts: Prompt[] = [
-    { id: '1', title: 'Explain File', content: 'Explain this file' },
+    { id: '1', title: 'Explain File', content: 'Explain this file or folder' },
     { id: '2', title: 'Check for Bugs', content: 'Analyze the file for bugs...' },
     // Add more predefined prompts as needed
   ];
@@ -79,8 +82,21 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
     color: '#d4d4d4', // Light gray for content
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '5px',
+    marginBottom: '10px',
+    backgroundColor: '#3c3c3c',
+    color: '#ffffff',
+    border: '1px solid #555555',
+    borderRadius: '4px',
+  };
+
   const handleUsePrompt = (content: string) => {
-    onUsePrompt(content);
+    let thisPath = windowsToLinuxPath(selectedFilePath||'');
+    const fileContext = `${thisPath}` //selectedFilePath ? `\n\nFile: ${thisPath}` : '';
+    const combinedContent = `${content}\n${fileContext}\n${additionalText}`;
+    onUsePrompt(combinedContent);
     if (!isTab) {
       onDone();
     }
@@ -99,6 +115,13 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
           </div>
         )}
       </div>
+      <input
+        type="text"
+        placeholder="Enter additional context here..."
+        value={additionalText}
+        onChange={(e) => setAdditionalText(e.target.value)}
+        style={inputStyle}
+      />
       <ul style={listStyle}>
         {predefinedPrompts.map((prompt) => (
           <li key={prompt.id} style={listItemStyle}>
