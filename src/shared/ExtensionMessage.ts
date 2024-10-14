@@ -5,7 +5,7 @@ import { HistoryItem } from "./HistoryItem"
 
 // webview will hold state
 export interface ExtensionMessage {
-	type: "action" | "state" | "selectedImages" | "ollamaModels" | "theme" | "workspaceUpdated" | "invoke"
+	type: "action" | "state" | "selectedImages" | "ollamaModels" | "theme" | "workspaceUpdated" | "invoke" | "clearSelectedPromptContent"
 	text?: string
 	action?: "chatButtonTapped" | "settingsButtonTapped" | "historyButtonTapped" | "promptLibraryButtonTapped" | "didBecomeVisible"
 	invoke?: "sendMessage" | "primaryButtonClick" | "secondaryButtonClick"

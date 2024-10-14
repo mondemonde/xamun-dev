@@ -220,6 +220,15 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		[messages.length, claudeAsk]
 	)
 
+	// New useEffect to handle automatic submission of selectedPromptContent
+	useEffect(() => {
+		if (selectedPromptContent) {
+			handleSendMessage(selectedPromptContent, [])
+			// Clear the selectedPromptContent after sending
+			vscode.postMessage({ type: "clearSelectedPromptContent" })
+		}
+	}, [selectedPromptContent, handleSendMessage])
+
 	const startNewTask = useCallback(() => {
 		vscode.postMessage({ type: "clearTask" })
 	}, [])
