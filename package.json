@@ -99,8 +99,8 @@
         "category": "Xamun Dev"
       },
       {
-        "command": "xamun-dev.exploreWithXamun",
-        "title": "Explore with Xamun",
+        "command": "xamun-dev.askXamunDev",
+        "title": "Ask Xamun Dev...",
         "category": "Xamun Dev"
       },
       {
@@ -140,8 +140,8 @@
       ],
       "explorer/context": [
         {
-          "command": "xamun-dev.exploreWithXamun",
-          "group": "navigation"
+          "command": "xamun-dev.askXamunDev",
+          "group": "xamun-dev@1"
         }
       ]
     }

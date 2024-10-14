@@ -107,7 +107,7 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	)
 
-	// Register the new "Explore with Xamun" command
+	// Register the new "Ask Xamun Dev..." command
 	context.subscriptions.push(exploreWithXamun(context))
 
 	const diffContentProvider = new (class implements vscode.TextDocumentContentProvider {
