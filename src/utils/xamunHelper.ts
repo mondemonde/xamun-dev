@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
+import * as fs from 'fs';
 
 export namespace xamun {
   /**
@@ -35,6 +37,41 @@ export namespace xamun {
     return linuxPath;
   }
 
+  /**
+   * Gets a file from the ai folder.
+   * @param fileName The name of the file to get.
+   * @returns The full path to the file in the ai folder.
+   */
+  export function getAiFile(fileName: string): string {
+    const aiFolder = path.join(__dirname, "ai");
+    console.log('AI Folder:', aiFolder);
+    return path.join(aiFolder, fileName);
+  }
 
+  /**
+   * Reads and parses the promptLib.json file from the ai folder.
+   * @returns The parsed content of the promptLib.json file or null if an error occurs.
+   */
+  export function readPromptLib(): any {
+    try {
+      const promptLibPath = getAiFile('promptLib.json');
+      console.log('Prompt Library Path:', promptLibPath);
+      
+      if (!fs.existsSync(promptLibPath)) {
+        console.error('promptLib.json does not exist at path:', promptLibPath);
+        return null;
+      }
 
-}//end xamun
+      const fileContent = fs.readFileSync(promptLibPath, 'utf8');
+      console.log('File Content:', fileContent);
+
+      const parsedContent = JSON.parse(fileContent);
+      console.log('Parsed Content:', parsedContent);
+
+      return parsedContent;
+    } catch (error) {
+      console.error('Error reading promptLib.json:', error);
+      return null;
+    }
+  }
+}
