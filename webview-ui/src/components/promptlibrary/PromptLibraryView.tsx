@@ -19,8 +19,23 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
 
   // This is a placeholder. We'll need to implement the actual fetching of prompts later.
   const predefinedPrompts: Prompt[] = [
+
     { id: '1', title: 'Explain File', content: 'Explain this file or folder' },
-    { id: '2', title: 'Check for Bugs', content: 'Analyze the file for bugs...' },
+
+    {
+      id: '2', title: 'Display data in the UI ', content: `I want you to follow the following steps to finish this task: \n  
+     
+      1.check if the path __path__ is inside a module or feature folder if it is a module then create 
+         a new component inside that module if you can not determine what module then create a new module or feature
+         where you will create the new component 
+         \n __addtionalText__ 
+         \n __jsonContent__
+
+      
+
+      ` },
+
+    { id: '3', title: 'Check for Bugs', content: 'Analyze the file for bugs...' },
     // Add more predefined prompts as needed
   ];
 
@@ -92,15 +107,41 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
     borderRadius: '4px',
   };
 
-  const handleUsePrompt = (content: string) => {
-    let thisPath = windowsToLinuxPath(selectedFilePath||'');
+  const handleUsePrompt = (content: string, additionalPrompt: string = '') => {
+
+    let thisPath = windowsToLinuxPath(selectedFilePath || '');
+    content = content.replace('__path__', thisPath)
+    content = content.replace('__addtionalText__', additionalPrompt)
+    content = content.replace('__jsonContent__', jsonContent)
+    //ontent += `\n ${additionalPrompt}`
+
+
     const fileContext = `${thisPath}` //selectedFilePath ? `\n\nFile: ${thisPath}` : '';
-    const combinedContent = `${content}\n${fileContext}\n${additionalText}`;
+    const combinedContent = `${content}\n${fileContext}`;
     onUsePrompt(combinedContent);
     if (!isTab) {
       onDone();
     }
   };
+
+  const handlePrompt2 = (additionalPrompt: string = '') => {
+    let prompt = `\n 2. use the api __addtionalText__ to fetch the data to display  create or update the service for the module \n`
+    prompt.replace('__addtionalText__', additionalPrompt)
+    setAdditionalText(prompt);
+  };
+
+  const [jsonContent, setJsonContent] = useState<string>(''); // State for JSON content
+  const [isJsonValid, setIsJsonValid] = useState<boolean>(false); // Track JSON validity
+
+
+  const handleJsonChange = (value: string) => {
+   
+    setIsJsonValid(value.trim().length > 0); // Validate JSON content is non-empty
+    let prompt = `\n -use the json sample as the model \n`
+    prompt += value;   
+    setJsonContent(prompt);
+  };
+
 
   return (
     <div style={containerStyle}>
@@ -115,21 +156,45 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
           </div>
         )}
       </div>
-      <input
+      {/* <input
         type="text"
         placeholder="Enter additional context here..."
         value={additionalText}
         onChange={(e) => setAdditionalText(e.target.value)}
         style={inputStyle}
-      />
+      /> */}
       <ul style={listStyle}>
         {predefinedPrompts.map((prompt) => (
           <li key={prompt.id} style={listItemStyle}>
             <h3 style={titleStyle}>{prompt.title}</h3>
             <p style={contentStyle}>{prompt.content.substring(0, 100)}...</p>
-            <button 
-              style={buttonStyle(!selectedFilePath)} 
-              onClick={() => handleUsePrompt(prompt.content)}
+
+            {/* Conditionally render input if the prompt id is '2' */}
+            {prompt.id === '2' && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Enter api endpoint/url to use..."
+                  style={inputStyle}
+                  value={additionalText}
+                  onChange={(e) => handlePrompt2(e.target.value)}
+                />
+
+                <label style={{ color: isJsonValid ? '#d4d4d4' : '#ff4d4d', marginBottom: '5px', display: 'block' }}>
+                  JSON Content (Required)
+                </label>
+                <textarea
+                  placeholder="Paste JSON content here..."
+                  style={{ ...inputStyle, height: '100px', borderColor: isJsonValid ? '#555555' : '#ff4d4d' }}
+                  value={jsonContent}
+                  onChange={(e) => handleJsonChange(e.target.value)}
+                />
+              </>
+            )}
+
+            <button
+              style={buttonStyle(!selectedFilePath)}
+              onClick={() => handleUsePrompt(prompt.content, additionalText)}
               disabled={!selectedFilePath}
             >
               Use Prompt

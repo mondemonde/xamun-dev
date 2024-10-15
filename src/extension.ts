@@ -160,5 +160,5 @@ export function activate(context: vscode.ExtensionContext) {
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-	outputChannel.appendLine("Claude Dev extension deactivated")
+	outputChannel.appendLine("Xamun Dev extension deactivated")
 }
