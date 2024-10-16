@@ -81,7 +81,7 @@ const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessa
 							style={{ color: normalColor, marginBottom: "-1.5px" }}></span>
 					),
 					<span style={{ color: normalColor, fontWeight: "bold" }}>
-						Claude wants to execute this command:
+						Xamun Dev wants to execute this command:
 					</span>,
 				]
 			case "completion_result":
@@ -158,7 +158,7 @@ const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessa
 					<>
 						<div style={headerStyle}>
 							{toolIcon("edit")}
-							<span style={{ fontWeight: "bold" }}>Claude wants to edit this file:</span>
+							<span style={{ fontWeight: "bold" }}>Xamun Dev want to edit this file:</span>
 						</div>
 						<CodeAccordian
 							diff={tool.diff!}
@@ -173,7 +173,7 @@ const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessa
 					<>
 						<div style={headerStyle}>
 							{toolIcon("new-file")}
-							<span style={{ fontWeight: "bold" }}>Claude wants to create a new file:</span>
+							<span style={{ fontWeight: "bold" }}>Xamun Dev want to create a new file:</span>
 						</div>
 						<CodeAccordian
 							code={tool.content!}
@@ -189,7 +189,7 @@ const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessa
 						<div style={headerStyle}>
 							{toolIcon("file-code")}
 							<span style={{ fontWeight: "bold" }}>
-								{message.type === "ask" ? "Claude wants to read this file:" : "Claude read this file:"}
+								{message.type === "ask" ? "Xamun Dev want to read this file:" : "Claude read this file:"}
 							</span>
 						</div>
 						{/* <CodeAccordian
@@ -247,7 +247,7 @@ const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessa
 							{toolIcon("folder-opened")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Claude wants to view the top level files in this directory:"
+									? "Xamun Dev will view the top level files in this directory:"
 									: "Claude viewed the top level files in this directory:"}
 							</span>
 						</div>
@@ -267,7 +267,7 @@ const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessa
 							{toolIcon("folder-opened")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Claude wants to recursively view all files in this directory:"
+									? "Xamun Dev will recursively view all files in this directory:"
 									: "Claude recursively viewed all files in this directory:"}
 							</span>
 						</div>
@@ -287,7 +287,7 @@ const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessa
 							{toolIcon("file-code")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask"
-									? "Claude wants to view source code definition names used in this directory:"
+									? "Xamun Dev will view source code definition names used in this directory:"
 									: "Claude viewed source code definition names used in this directory:"}
 							</span>
 						</div>
@@ -307,7 +307,7 @@ const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessa
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask" ? (
 									<>
-										Claude wants to search this directory for <code>{tool.regex}</code>:
+										Xamun Dev will search this directory for <code>{tool.regex}</code>:
 									</>
 								) : (
 									<>
@@ -333,7 +333,7 @@ const ChatRowContent = ({ message, isExpanded, onToggleExpand, lastModifiedMessa
 							{isInspecting ? <ProgressIndicator /> : toolIcon("inspect")}
 							<span style={{ fontWeight: "bold" }}>
 								{message.type === "ask" ? (
-									<>Claude wants to inspect this website:</>
+									<>Xamun Dev will inspect this website:</>
 								) : (
 									<>Claude is inspecting this website:</>
 								)}

@@ -62,6 +62,10 @@ const AppContent = () => {
 		setCurrentView('chat');
 	}, [])
 
+	const clearSelectedPromptContent = useCallback(() => {
+		setSelectedPromptContent(undefined);
+	}, []);
+
 	if (!didHydrateState) {
 		return null
 	}
@@ -84,6 +88,7 @@ const AppContent = () => {
 				showAnnouncement={showAnnouncement}
 				hideAnnouncement={() => setShowAnnouncement(false)}
 				selectedPromptContent={selectedPromptContent}
+				clearSelectedPromptContent={clearSelectedPromptContent}
 			/>
 		</>
 	)

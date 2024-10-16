@@ -23,19 +23,63 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
     { id: '1', title: 'Explain File', content: 'Explain this file or folder' },
 
     {
-      id: '2', title: 'Display data in the UI ', content: `I want you to follow the following steps to finish this task: \n  
-     
-      1.check if the path __path__ is inside a module or feature folder if it is a module then create 
-         a new component inside that module if you can not determine what module then create a new module or feature
-         where you will create the new component 
-         \n __addtionalText__ 
-         \n __jsonContent__
-
-      
+      id: '2', title: 'Display data in the UI ',
+      content: `
+      You're an Angular front end developer expert and you are task to get the data from a backend api and display the results in the UI.
+    
+      I want to display data in the ui using an api. \n   
+       - __addtionalText__  \n
+       - Use the files in __path__ \n   
 
       ` },
 
-    { id: '3', title: 'Check for Bugs', content: 'Analyze the file for bugs...' },
+    {
+      id: '3', title: 'Create an Angular form and submit the data to Backend',
+      content: `
+        You're an Angular front end developer expert and you are task to create an Angular form that validates the form fields as required and then submit to the backend  api service.
+        Use Angular ng validators and Angular material error in the UI for the required fields.
+        __addtionalText__  \n
+        Use the files in __path__ \n 
+        ` },
+
+
+    {
+      id: '4', title: 'Display data with specified model ',
+      content: `I want to display data in the ui using an api. \n
+      I want you to follow the following steps to finish this task: \n  
+      -if the __path__ is the same folder src/app/modules then create a new module
+      -but if the path __path__ is not an html file and it is inside a module or feature folder or it is a module then create 
+         a new component inside that module \n
+      -if you can not determine what module the path is then create a new module or feature where you will create the new component \n
+      -if the __path__ is an html file then try to update the file and that component do not create a new module or component \n
+      -if not specify provide a sample api endpoint  to fetch data and update or create the service for the module \n
+      -if json model is not provided then create a sample model based on module name or api endpoint or path name or based it on the name of other module name \n 
+      -dont name it like 'module'
+
+         \n __addtionalText__ 
+         \n __jsonContent__      
+
+      ` },
+    {
+      id: '5', title: 'Submit form with specified model',
+      content: `Create an Angular form and submit the data to Backend . \n
+      I want you to follow the following steps to finish this task: \n  
+      -if the __path__ is the same folder src/app/modules then create a new module
+      -but if the path __path__ is not an html file and it is inside a module or feature folder or it is a module then create 
+         a new component inside that module \n
+      -if you can not determine what module the path is then create a new module or feature where you will create the new component \n
+      -if the __path__ is an html file then try to update the file and that component do not create a new module or component \n
+      -if not specify provide a sample api endpoint  to submit data and update or create the service for the module \n
+      -if json model is not provided then create a sample model based on module name or api endpoint or path name or based it on the name of other module name \n 
+      -dont name it like 'module'
+
+         \n __addtionalText__ 
+         \n __jsonContent__      
+
+      ` },
+
+
+    { id: '6', title: 'Check for Bugs', content: 'Analyze the file for bugs...' },
     // Add more predefined prompts as needed
   ];
 
@@ -90,7 +134,13 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
   });
 
   const titleStyle: React.CSSProperties = {
+    //color: '#d0ced2', // Light xamun for titles
+    color: '#b278ec', // Light xamun for titles
+  };
+
+  const libTitleStyle: React.CSSProperties = {
     color: '#d0ced2', // Light xamun for titles
+    //color: '#b278ec', // Light xamun for titles
   };
 
   const contentStyle: React.CSSProperties = {
@@ -107,38 +157,62 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
     borderRadius: '4px',
   };
 
-  const handleUsePrompt = (content: string, additionalPrompt: string = '') => {
+  const handleUsePrompt = (content: string) => {
 
     let thisPath = windowsToLinuxPath(selectedFilePath || '');
     content = content.replace('__path__', thisPath)
-    content = content.replace('__addtionalText__', additionalPrompt)
+    content = content.replace('__addtionalText__', additionalText)
     content = content.replace('__jsonContent__', jsonContent)
-    //ontent += `\n ${additionalPrompt}`
-
+    //repeat
+    content = content.replace('__path__', thisPath)
+    
 
     const fileContext = `${thisPath}` //selectedFilePath ? `\n\nFile: ${thisPath}` : '';
     const combinedContent = `${content}\n${fileContext}`;
+
+    console.log(combinedContent);
+
     onUsePrompt(combinedContent);
     if (!isTab) {
       onDone();
     }
   };
 
-  const handlePrompt2 = (additionalPrompt: string = '') => {
-    let prompt = `\n 2. use the api __addtionalText__ to fetch the data to display  create or update the service for the module \n`
-    prompt.replace('__addtionalText__', additionalPrompt)
+  const handlePrompt4 = (value: string = '') => {
+    setAdditionalText('');
+    let prompt = `\n -provide a sample api endpoint to fetch data and update or create the service for the module `
+
+    if (value.length > 0) {
+      prompt = `\n -use the api ${value} to fetch the data to display  create or update the service for the module \n`
+      //prompt.replace('__addtionalText__', value)
+    }
+
     setAdditionalText(prompt);
   };
+
+  const handlePrompt3 = (value: string = '') => {
+    setAdditionalText('');
+    let prompt = `\n -provide a sample api endpoint to fetch data and update or create the service for the module `
+
+    if (value.length > 0) {
+      prompt = `\n -use the api ${value} to post the data.
+      create or update the service for the module \n`
+      //prompt.replace('__addtionalText__', value)
+    }
+
+    setAdditionalText(prompt);
+  };
+
 
   const [jsonContent, setJsonContent] = useState<string>(''); // State for JSON content
   const [isJsonValid, setIsJsonValid] = useState<boolean>(false); // Track JSON validity
 
 
   const handleJsonChange = (value: string) => {
-   
-    setIsJsonValid(value.trim().length > 0); // Validate JSON content is non-empty
-    let prompt = `\n -use the json sample as the model \n`
-    prompt += value;   
+    setJsonContent('');
+    //setIsJsonValid(value.trim().length > 0); // Validate JSON content is non-empty
+    let prompt = `\n -use the model \n`
+    prompt += value;
     setJsonContent(prompt);
   };
 
@@ -147,7 +221,7 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
     <div style={containerStyle}>
       <div style={headerStyle}>
         <div style={headerTopStyle}>
-          <h2 style={titleStyle}>Prompt Library</h2>
+          <h2 style={libTitleStyle}>Prompt Library</h2>
           {!isTab && <button style={buttonStyle(false)} onClick={onDone}>Close</button>}
         </div>
         {selectedFilePath && (
@@ -166,35 +240,64 @@ const PromptLibraryView: React.FC<PromptLibraryViewProps> = ({ onDone, isTab = f
       <ul style={listStyle}>
         {predefinedPrompts.map((prompt) => (
           <li key={prompt.id} style={listItemStyle}>
-            <h3 style={titleStyle}>{prompt.title}</h3>
+            <h3 style={titleStyle}>{prompt.id}.&nbsp;{prompt.title}</h3>
             <p style={contentStyle}>{prompt.content.substring(0, 100)}...</p>
 
             {/* Conditionally render input if the prompt id is '2' */}
-            {prompt.id === '2' && (
+            {(prompt.id === '4' || prompt.id === '5') && (
               <>
                 <input
                   type="text"
                   placeholder="Enter api endpoint/url to use..."
                   style={inputStyle}
-                  value={additionalText}
-                  onChange={(e) => handlePrompt2(e.target.value)}
+                  //value={additionalText}
+                  onChange={(e) => handlePrompt4(e.target.value)}
                 />
 
                 <label style={{ color: isJsonValid ? '#d4d4d4' : '#ff4d4d', marginBottom: '5px', display: 'block' }}>
-                  JSON Content (Required)
+                  api JSON result(model) sample:
                 </label>
                 <textarea
-                  placeholder="Paste JSON content here..."
+                  placeholder="Paste JSON or model descriptions..."
                   style={{ ...inputStyle, height: '100px', borderColor: isJsonValid ? '#555555' : '#ff4d4d' }}
-                  value={jsonContent}
+                  // value={jsonContent}
                   onChange={(e) => handleJsonChange(e.target.value)}
                 />
               </>
             )}
 
+             {/* Conditionally render input if the prompt id is '5' */}
+             {(prompt.id === '2') && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Enter api endpoint/url to use..."
+                  style={inputStyle}
+                  //value={additionalText}
+                  onChange={(e) => handlePrompt4(e.target.value)}
+                />
+            
+              </>
+            )}
+
+            {/* Conditionally render input if the prompt id is '2' */}
+              {(prompt.id === '3') && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Enter api endpoint/url to use..."
+                  style={inputStyle}
+                  //value={additionalText}
+                  onChange={(e) => handlePrompt3(e.target.value)}
+                />
+            
+              </>
+            )}
+
+
             <button
               style={buttonStyle(!selectedFilePath)}
-              onClick={() => handleUsePrompt(prompt.content, additionalText)}
+              onClick={() => handleUsePrompt(prompt.content)}
               disabled={!selectedFilePath}
             >
               Use Prompt
